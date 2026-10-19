@@ -11,8 +11,8 @@ only use one at a time:
   answers as "recently used", and shows the one that woke up last. If you pick up another
   mouse, the bar switches to it on the next poll.
 - **The other mice keep their last known level.** If one of them is under the low-battery
-  threshold, a `󰂃` warning appears next to the main reading, so you know to charge it
-  before you need it.
+  threshold, a small red dot appears on the widget, so you know to charge it before you
+  need it. Hover to see which one it is.
 - **Hover the widget to see every connected mouse.** Each row shows the level, whether
   the mouse is charging, awake or asleep, and when it last answered. The mouse shown on
   the bar is highlighted. Last known levels are cached in
@@ -25,7 +25,7 @@ Bar label:
 | `󰍽 73%`      | the mouse in use, at 73% |
 | `󰍽 󱐋73%`     | charging |
 | `󰍽 73%` dim  | every mouse is asleep; this is the last one that answered |
-| `󰍽 73% 󰂃`    | another connected mouse is low |
+| `󰍽 73%` + red dot | another connected mouse is low |
 | `󰍽 15%` red  | the mouse in use is low |
 | `󰍽 !` red    | mousectl can't read it (the popup says why) |
 

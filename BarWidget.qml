@@ -27,7 +27,6 @@ BarWidget {
     if (!shown) return mouseGlyph + " !"
     if (vertical) return mouseGlyph
     return mouseGlyph + " " + (shown.charging ? "󱐋" : "") + shown.percentText
-      + (shown.otherLow ? " 󰂃" : "")
   }
 
   property bool popupOpen: false
@@ -123,6 +122,19 @@ BarWidget {
       if (b === Qt.RightButton) root.refresh()
       else root.openTui()
     }
+  }
+
+  // Another connected mouse is low: a badge dot, the popup says which.
+  Rectangle {
+    visible: root.shown !== null && root.shown.otherLow
+    width: Style.space(5)
+    height: width
+    radius: width / 2
+    color: root.bar ? root.bar.urgent : Color.urgent
+    anchors.right: button.right
+    anchors.rightMargin: Style.space(4)
+    anchors.top: button.top
+    anchors.topMargin: Style.space(5)
   }
 
   PopupCard {
