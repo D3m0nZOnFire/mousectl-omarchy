@@ -3,6 +3,8 @@
 An [Omarchy](https://omarchy.org) bar widget for the battery of your gaming mice, read with
 [mousectl](https://github.com/D3m0nZOnFire/mousectl).
 
+![The bar showing "50%" for the Attack Shark X11 in use, with a red dot because the sleeping Pulsar X3 is at 14%, and the popup listing all three mice](preview.png)
+
 It's built for a desk with several mice connected at once (dongles in a dock) where you
 only use one at a time:
 
