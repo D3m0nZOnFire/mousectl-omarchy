@@ -11,6 +11,7 @@
 
 var INTERFACE = 1
 var CACHE_VERSION = 1
+var HOMEPAGE = "https://github.com/D3m0nZOnFire/mousectl"
 
 // ---- input
 
@@ -160,11 +161,35 @@ function updatedLine(lastPoll, polling, now) {
   return "updated " + ago(lastPoll, now)
 }
 
+// ---- failures of the poll itself: { code: "missing" | "outdated" | "failed", message }
+
+function runFailure(exitCode, stderr) {
+  if (exitCode === 127) return { code: "missing", message: "mousectl is not installed (or not on PATH)" }
+  var last = String(stderr || "").trim().split("\n").pop()
+  return { code: "failed", message: last || "mousectl exited with " + exitCode }
+}
+
+function parseFailure(e) {
+  return { code: "outdated", message: String(e && e.message || e) }
+}
+
+function needsInstall(problem) {
+  return !!problem && (problem.code === "missing" || problem.code === "outdated")
+}
+
+function visitLine() {
+  return "visit " + HOMEPAGE.replace(/^https:\/\//, "")
+}
+
 // ---- clicks. The bar API handed to third-party widgets has run() but no
 // shellQuote(), so quoting is done here.
 
 function shellQuote(s) {
   return "'" + String(s).replace(/'/g, "'\\''") + "'"
+}
+
+function clickCommand(problem, command) {
+  return needsInstall(problem) ? "omarchy-launch-browser " + shellQuote(HOMEPAGE) : tuiCommand(command)
 }
 
 function tuiCommand(command) {

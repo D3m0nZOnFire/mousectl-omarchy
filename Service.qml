@@ -17,7 +17,7 @@ Item {
   property int intervalSec: 30
 
   property var mice: ({})
-  property string problem: ""         // why there is nothing to show, or ""
+  property var problem: null          // {code, message} when the poll itself failed
   property real lastPoll: 0
   property bool ready: false          // cache read (or absent): start polling
   readonly property bool polling: proc.running
@@ -34,19 +34,17 @@ Item {
 
   function ingest(exitCode, out, err) {
     if (exitCode !== 0 || out.trim() === "") {
-      var last = err.trim().split("\n").pop()
-      problem = exitCode === 127 ? "mousectl not found on PATH"
-        : (last || "mousectl exited with " + exitCode)
+      problem = Model.runFailure(exitCode, err)
       return
     }
     var now = Date.now()
     try {
       mice = Model.merge(mice, Model.parse(out), now)
     } catch (e) {
-      problem = String(e.message || e)
+      problem = Model.parseFailure(e)
       return
     }
-    problem = ""
+    problem = null
     lastPoll = now
     cache.setText(JSON.stringify(Model.persist(mice)) + "\n")
   }

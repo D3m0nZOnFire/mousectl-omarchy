@@ -31,6 +31,10 @@ Bar label:
 | `󰍽 15%` red  | the mouse in use is low |
 | `󰍽 !` red    | mousectl can't read it (the popup says why) |
 
+If mousectl isn't installed, or is too old for the widget, the popup says so with a link
+to the [mousectl page](https://github.com/D3m0nZOnFire/mousectl), and clicking the widget
+opens that page instead of the TUI.
+
 When no supported mouse is connected, the widget hides.
 
 Left click opens `mousectl tui`. Right click polls again right away.

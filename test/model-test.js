@@ -298,6 +298,47 @@ test("updated line: polling, never polled, and age of the last poll", function (
   assert.strictEqual(M.updatedLine(now - 3 * MIN, false, now), "updated 3 min ago")
 })
 
+// ---- mousectl missing or too old
+
+test("exit 127 means mousectl is not installed", function () {
+  var f = M.runFailure(127, "sh: line 1: mousectl: command not found\n")
+  assert.strictEqual(f.code, "missing")
+  assert.match(f.message, /not installed|not found/)
+})
+
+test("any other failure keeps mousectl's last stderr line", function () {
+  var f = M.runFailure(2, "usage: ...\nmousectl: error: unrecognized arguments: --json\n")
+  assert.strictEqual(f.code, "failed")
+  assert.strictEqual(f.message, "mousectl: error: unrecognized arguments: --json")
+  assert.strictEqual(M.runFailure(3, "").message, "mousectl exited with 3")
+})
+
+test("output the widget can't read means mousectl is outdated", function () {
+  var f = M.parseFailure(new Error("mousectl is too old"))
+  assert.strictEqual(f.code, "outdated")
+  assert.strictEqual(f.message, "mousectl is too old")
+})
+
+test("missing and outdated point to the mousectl page, other failures don't", function () {
+  assert.strictEqual(M.needsInstall({ code: "missing", message: "" }), true)
+  assert.strictEqual(M.needsInstall({ code: "outdated", message: "" }), true)
+  assert.strictEqual(M.needsInstall({ code: "failed", message: "" }), false)
+  assert.strictEqual(M.needsInstall(null), false)
+})
+
+test("the visit line names the GitHub page", function () {
+  assert.strictEqual(M.HOMEPAGE, "https://github.com/D3m0nZOnFire/mousectl")
+  assert.strictEqual(M.visitLine(), "visit github.com/D3m0nZOnFire/mousectl")
+})
+
+test("click opens the TUI, or the mousectl page when it has to be installed", function () {
+  assert.strictEqual(M.clickCommand(null, "mousectl"), "omarchy-launch-or-focus-tui 'mousectl' tui")
+  assert.strictEqual(M.clickCommand({ code: "failed", message: "x" }, "mousectl"),
+                     "omarchy-launch-or-focus-tui 'mousectl' tui")
+  assert.strictEqual(M.clickCommand({ code: "missing", message: "x" }, "mousectl"),
+                     "omarchy-launch-browser 'https://github.com/D3m0nZOnFire/mousectl'")
+})
+
 // ---- cache across shell restarts
 
 test("persist/restore keeps name, level and last seen, nothing live", function () {

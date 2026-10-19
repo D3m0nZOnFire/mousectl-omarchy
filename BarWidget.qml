@@ -19,8 +19,10 @@ BarWidget {
   readonly property int lowThreshold: setting("lowThreshold", 20)
   readonly property var shown: Model.summary(mice, lowThreshold)
   readonly property var mouseRows: Model.rows(mice)
-  readonly property string problem: service ? service.problem : "mousectl service not running"
-  readonly property bool hasSomething: shown !== null || problem !== ""
+  readonly property var problem: service ? service.problem
+    : ({ code: "failed", message: "mousectl service not running" })
+  readonly property bool needsInstall: Model.needsInstall(problem)
+  readonly property bool hasSomething: shown !== null || problem !== null
 
   readonly property string mouseGlyph: "󰍽"
   readonly property string labelText: {
@@ -69,9 +71,10 @@ BarWidget {
     if (service) service.refresh()
   }
 
-  function openTui() {
+  // The TUI, or the mousectl page when mousectl is missing or too old.
+  function activate() {
     close()
-    if (bar) bar.run(Model.tuiCommand(setting("command", "mousectl")))
+    if (bar) bar.run(Model.clickCommand(problem, setting("command", "mousectl")))
   }
 
   function toggle() {
@@ -106,7 +109,7 @@ BarWidget {
     anchors.fill: parent
     bar: root.bar
     text: root.labelText
-    active: root.shown ? root.shown.urgent : root.problem !== ""
+    active: root.shown ? root.shown.urgent : root.problem !== null
     dimmed: root.shown ? root.shown.dim : false
 
     onTooltipHoveredChanged: {
@@ -120,7 +123,7 @@ BarWidget {
 
     onPressed: function(b) {
       if (b === Qt.RightButton) root.refresh()
-      else root.openTui()
+      else root.activate()
     }
   }
 
@@ -168,13 +171,32 @@ BarWidget {
       }
 
       Text {
-        visible: root.problem !== ""
+        visible: root.problem !== null
         width: parent.width
-        text: root.problem
+        text: root.problem ? root.problem.message : ""
         color: root.bar ? root.bar.urgent : Color.urgent
         wrapMode: Text.Wrap
         font.family: root.contentFontFamily
         font.pixelSize: Style.font.body
+      }
+
+      Text {
+        visible: root.needsInstall
+        width: parent.width
+        text: Model.visitLine()
+        color: Color.accent
+        font.underline: visitArea.containsMouse
+        wrapMode: Text.Wrap
+        font.family: root.contentFontFamily
+        font.pixelSize: Style.font.body
+
+        MouseArea {
+          id: visitArea
+          anchors.fill: parent
+          hoverEnabled: true
+          cursorShape: Qt.PointingHandCursor
+          onClicked: root.activate()
+        }
       }
 
       Repeater {
@@ -189,9 +211,12 @@ BarWidget {
 
       Text {
         width: parent.width
-        text: Model.updatedLine(root.service ? root.service.lastPoll : 0,
-                                root.service ? root.service.polling : false, root.now)
-          + "\nclick: mousectl tui  ·  right click: refresh"
+        // After a failed first poll there is no "last updated" worth showing.
+        text: (root.problem !== null && !(root.service && root.service.lastPoll) ? ""
+                : Model.updatedLine(root.service ? root.service.lastPoll : 0,
+                                    root.service ? root.service.polling : false, root.now) + "\n")
+          + (root.needsInstall ? "click: open the page  ·  right click: retry"
+                               : "click: mousectl tui  ·  right click: refresh")
         color: root.contentForeground
         opacity: 0.48
         horizontalAlignment: Text.AlignHCenter
