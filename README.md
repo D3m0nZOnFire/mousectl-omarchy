@@ -91,7 +91,7 @@ node test/model-test.js
 ## Compatibility
 
 `BarWidget.qml` uses Omarchy's internal `qs.Ui` / `qs.Commons` components, which aren't a
-stable plugin API. It was last checked against Omarchy 4.0.4 with Quickshell 0.3.2.
+stable plugin API. It was last checked against Omarchy 4.0.5 with Quickshell 0.3.2.
 
 ## License
 
