@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "d3m0nz.mousectl",
+  "name": "Mouse battery (mousectl)",
+  "version": "0.1.0",
+  "author": "D3m0nZ",
+  "license": "MIT",
+  "description": "Battery of the mouse you are using, and of every other connected mouse, from mousectl.",
+  "kinds": [
+    "service",
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "service": "Service.qml",
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Mouse battery",
+    "description": "Battery of the mouse in use; hover for every connected mouse.",
+    "category": "System",
+    "allowMultiple": false,
+    "defaultSection": "right",
+    "defaults": {
+      "intervalSec": 30,
+      "lowThreshold": 20,
+      "command": "mousectl"
+    },
+    "schema": [
+      { "key": "intervalSec", "type": "integer", "label": "Poll interval (seconds)",
+        "min": 10, "max": 600, "step": 5, "defaultValue": 30 },
+      { "key": "lowThreshold", "type": "integer", "label": "Low battery warning (%)",
+        "min": 5, "max": 50, "step": 5, "defaultValue": 20 },
+      { "key": "command", "type": "string", "label": "mousectl command", "defaultValue": "mousectl" }
+    ]
+  }
+}
