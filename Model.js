@@ -154,6 +154,23 @@ function statusLine(e, now) {
   return "awake" + link
 }
 
+function updatedLine(lastPoll, polling, now) {
+  if (polling) return "checking mice…"
+  if (!lastPoll) return "not checked yet"
+  return "updated " + ago(lastPoll, now)
+}
+
+// ---- clicks. The bar API handed to third-party widgets has run() but no
+// shellQuote(), so quoting is done here.
+
+function shellQuote(s) {
+  return "'" + String(s).replace(/'/g, "'\\''") + "'"
+}
+
+function tuiCommand(command) {
+  return "omarchy-launch-or-focus-tui " + shellQuote(command) + " tui"
+}
+
 // Nerd Font battery glyphs (md-battery-*).
 var LEVEL_GLYPHS = ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
 

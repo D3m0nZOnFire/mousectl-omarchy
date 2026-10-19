@@ -279,6 +279,25 @@ test("battery glyph by level, charging and unknown", function () {
   assert.strictEqual(M.batteryGlyph(55, "charging"), "󰂄")
 })
 
+// ---- clicks and refresh feedback
+
+test("shellQuote survives spaces and quotes", function () {
+  assert.strictEqual(M.shellQuote("mousectl"), "'mousectl'")
+  assert.strictEqual(M.shellQuote("/opt/my tools/mouse'ctl"), "'/opt/my tools/mouse'\\''ctl'")
+})
+
+test("tuiCommand opens mousectl tui through omarchy's TUI launcher", function () {
+  assert.strictEqual(M.tuiCommand("mousectl"), "omarchy-launch-or-focus-tui 'mousectl' tui")
+})
+
+test("updated line: polling, never polled, and age of the last poll", function () {
+  var now = 1000 * MIN
+  assert.strictEqual(M.updatedLine(now - 5 * MIN, true, now), "checking mice…")
+  assert.strictEqual(M.updatedLine(0, false, now), "not checked yet")
+  assert.strictEqual(M.updatedLine(now - 12000, false, now), "updated just now")
+  assert.strictEqual(M.updatedLine(now - 3 * MIN, false, now), "updated 3 min ago")
+})
+
 // ---- cache across shell restarts
 
 test("persist/restore keeps name, level and last seen, nothing live", function () {

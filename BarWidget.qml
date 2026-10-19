@@ -72,7 +72,7 @@ BarWidget {
 
   function openTui() {
     close()
-    if (bar) bar.run("omarchy-launch-or-focus-tui " + bar.shellQuote(setting("command", "mousectl")) + " tui")
+    if (bar) bar.run(Model.tuiCommand(setting("command", "mousectl")))
   }
 
   function toggle() {
@@ -177,7 +177,9 @@ BarWidget {
 
       Text {
         width: parent.width
-        text: "click: mousectl tui  ·  right click: refresh"
+        text: Model.updatedLine(root.service ? root.service.lastPoll : 0,
+                                root.service ? root.service.polling : false, root.now)
+          + "\nclick: mousectl tui  ·  right click: refresh"
         color: root.contentForeground
         opacity: 0.48
         horizontalAlignment: Text.AlignHCenter
