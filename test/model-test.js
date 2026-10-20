@@ -241,6 +241,33 @@ test("summary: an error on the shown mouse is urgent and says so", function () {
   assert.strictEqual(sm.percentText, "!")
 })
 
+// ---- when the widget shows at all
+
+test("visible: hidden without mice or problems", function () {
+  assert.strictEqual(M.visible(M.summary({}, 20), null, true), false)
+})
+
+test("visible: shown while a mouse is awake", function () {
+  assert.strictEqual(M.visible(M.summary(M.merge({}, [reading("a", 80)], 1000), 20), null, true), true)
+})
+
+test("visible: all asleep hides it, unless hideWhenAsleep is off", function () {
+  var s = M.merge({}, [reading("a", 80)], 1000)
+  s = M.merge(s, [asleep("a")], 2000)
+  assert.strictEqual(M.visible(M.summary(s, 20), null, true), false)
+  assert.strictEqual(M.visible(M.summary(s, 20), null, false), true)
+})
+
+test("visible: a mouse on its cable counts as in use", function () {
+  assert.strictEqual(M.visible(M.summary(M.merge({}, [wired("a")], 1000), 20), null, true), true)
+})
+
+test("visible: errors always show, even with every mouse asleep", function () {
+  var s = M.merge({}, [failing("a", "permission")], 1000)
+  assert.strictEqual(M.visible(M.summary(s, 20), null, true), true)
+  assert.strictEqual(M.visible(null, { code: "missing", message: "x" }, true), true)
+})
+
 // ---- text for the popup
 
 test("ago", function () {

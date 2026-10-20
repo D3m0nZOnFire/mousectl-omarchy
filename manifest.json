@@ -23,6 +23,7 @@
     "defaults": {
       "intervalSec": 30,
       "lowThreshold": 20,
+      "hideWhenAsleep": true,
       "command": "mousectl"
     },
     "schema": [
@@ -30,6 +31,8 @@
         "min": 10, "max": 600, "step": 5, "defaultValue": 30 },
       { "key": "lowThreshold", "type": "integer", "label": "Low battery warning (%)",
         "min": 5, "max": 50, "step": 5, "defaultValue": 20 },
+      { "key": "hideWhenAsleep", "type": "boolean", "label": "Hide while every mouse is asleep",
+        "defaultValue": true },
       { "key": "command", "type": "string", "label": "mousectl command", "defaultValue": "mousectl" }
     ]
   }

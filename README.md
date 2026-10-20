@@ -26,7 +26,7 @@ Bar label:
 |--------------|---------|
 | `󰍽 73%`      | the mouse in use, at 73% |
 | `󰍽 󱐋73%`     | charging |
-| `󰍽 73%` dim  | every mouse is asleep; this is the last one that answered |
+| `󰍽 73%` dim  | every mouse is asleep; this is the last one that answered (only with `hideWhenAsleep` off) |
 | `󰍽 73%` + red dot | another connected mouse is low |
 | `󰍽 15%` red  | the mouse in use is low |
 | `󰍽 !` red    | mousectl can't read it (the popup says why) |
@@ -35,7 +35,9 @@ If mousectl isn't installed, or is too old for the widget, the popup says so wit
 to the [mousectl page](https://github.com/D3m0nZOnFire/mousectl), and clicking the widget
 opens that page instead of the TUI.
 
-When no supported mouse is connected, the widget hides.
+When no supported mouse is connected, the widget hides. By default it also hides while
+every mouse is asleep, so it's only there while you use one. It comes back on the first
+poll after you pick a mouse up. Errors (no access, mousectl missing) always show.
 
 Left click opens `mousectl tui`. Right click polls again right away.
 
@@ -61,6 +63,7 @@ Set these in the widget's entry in `~/.config/omarchy/shell.json`:
 |----------------|------------|---------|
 | `intervalSec`  | `30`       | seconds between polls |
 | `lowThreshold` | `20`       | percent at or under which a mouse counts as low |
+| `hideWhenAsleep` | `true`   | hide the widget while every mouse is asleep; `false` keeps the last reading, dimmed |
 | `command`      | `mousectl` | the mousectl executable, if it's not on `PATH` |
 
 A poll talks to every connected mouse, one after another. A sleeping mouse takes a few

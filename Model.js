@@ -131,6 +131,14 @@ function summary(state, threshold) {
   }
 }
 
+// Whether the widget shows: always for a problem, never without a mouse,
+// and not while every mouse is asleep when hideWhenAsleep is on.
+function visible(summary, problem, hideWhenAsleep) {
+  if (problem) return true
+  if (!summary) return false
+  return !(hideWhenAsleep && summary.dim)
+}
+
 // ---- text
 
 function ago(then, now) {

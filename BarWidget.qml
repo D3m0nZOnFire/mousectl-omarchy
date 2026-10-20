@@ -22,7 +22,7 @@ BarWidget {
   readonly property var problem: service ? service.problem
     : ({ code: "failed", message: "mousectl service not running" })
   readonly property bool needsInstall: Model.needsInstall(problem)
-  readonly property bool hasSomething: shown !== null || problem !== null
+  readonly property bool hasSomething: Model.visible(shown, problem, setting("hideWhenAsleep", true))
 
   readonly property string mouseGlyph: "󰍽"
   readonly property string labelText: {
